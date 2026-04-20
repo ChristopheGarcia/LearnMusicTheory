@@ -1,0 +1,1107 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --r:#FF4D4D;--o:#FF9A3C;--p:#A080FF;--g:#50C878;--b:#38B2F8;
+  --bg:#08080E;--c1:#111118;--c2:#16161F;--c3:#1E1E2A;
+  --bd:rgba(255,255,255,0.07);--bd2:rgba(255,255,255,0.13);
+  --t:rgba(240,238,232,1);--tm:rgba(240,238,232,0.5);--tl:rgba(240,238,232,0.25);
+  --mono:'Space Mono',monospace;--sans:'DM Sans',sans-serif;
+  --rad:6px;
+}
+body{background:var(--bg);color:var(--t);font-family:var(--sans);min-height:100vh;overflow-x:hidden}
+.app{max-width:720px;margin:0 auto;padding:0 1rem 5rem}
+
+/* HEADER */
+.hdr{padding:1.75rem 0 1.25rem;border-bottom:0.5px solid var(--bd);margin-bottom:0;position:relative;overflow:hidden}
+.hdr-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(255,77,77,0.07) 0%,transparent 60%),radial-gradient(ellipse at 80% 50%,rgba(160,128,255,0.07) 0%,transparent 60%);pointer-events:none}
+.hdr h1{font-family:var(--mono);font-size:20px;font-weight:700;letter-spacing:-0.03em;position:relative}
+.hdr h1 em{color:var(--r);font-style:normal}
+.hdr p{font-size:12px;color:var(--tm);margin-top:5px;letter-spacing:.04em;font-weight:300;position:relative}
+.xp-bar-wrap{margin-top:1rem;position:relative}
+.xp-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.xp-label{font-family:var(--mono);font-size:10px;color:var(--tm);letter-spacing:.06em}
+.xp-lvl{font-family:var(--mono);font-size:11px;color:var(--r);font-weight:700}
+.xp-bar{height:3px;background:var(--c3);border-radius:2px;overflow:hidden}
+.xp-fill{height:100%;background:linear-gradient(90deg,var(--r),var(--o));border-radius:2px;transition:width .6s ease;width:0%}
+.xp-badges{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.badge{font-family:var(--mono);font-size:9px;padding:3px 8px;border-radius:20px;border:0.5px solid;letter-spacing:.04em;transition:all .3s}
+.badge.locked{background:var(--c2);color:var(--tl);border-color:var(--bd)}
+.badge.unlocked{background:rgba(255,77,77,0.12);color:var(--r);border-color:rgba(255,77,77,0.35)}
+
+/* NAV */
+.nav{display:flex;gap:4px;padding:1rem 0 .75rem;overflow-x:auto;position:sticky;top:0;background:var(--bg);z-index:10;border-bottom:0.5px solid var(--bd)}
+.nav::-webkit-scrollbar{height:0}
+.nb{flex-shrink:0;font-family:var(--mono);font-size:10px;padding:6px 12px;border:0.5px solid var(--bd);background:var(--c1);color:var(--tm);border-radius:4px;cursor:pointer;transition:all .15s;letter-spacing:.05em;display:flex;align-items:center;gap:5px}
+.nb:hover{border-color:var(--bd2);color:var(--t)}
+.nb.active{background:var(--r);color:#fff;border-color:var(--r)}
+.nb .dot{width:5px;height:5px;border-radius:50%;background:currentColor;opacity:.6}
+
+/* SECTIONS */
+.sec{display:none;padding-top:1.25rem}
+.sec.active{display:block}
+
+/* MODULES */
+.mod{background:var(--c1);border:0.5px solid var(--bd);border-radius:var(--rad);margin-bottom:.875rem;overflow:hidden}
+.mod-hd{padding:.875rem 1.125rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:background .15s}
+.mod-hd:hover{background:var(--c2)}
+.mod-title{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--t);letter-spacing:.02em}
+.mod-right{display:flex;gap:7px;align-items:center}
+.tag{font-size:9px;padding:2px 7px;border-radius:3px;font-family:var(--mono)}
+.t-b{background:rgba(255,77,77,.12);color:var(--r);border:0.5px solid rgba(255,77,77,.3)}
+.t-d{background:rgba(255,154,60,.12);color:var(--o);border:0.5px solid rgba(255,154,60,.3)}
+.t-a{background:rgba(160,128,255,.12);color:var(--p);border:0.5px solid rgba(160,128,255,.3)}
+.t-fl{background:rgba(56,178,248,.12);color:var(--b);border:0.5px solid rgba(56,178,248,.3)}
+.t-rk{background:rgba(80,200,120,.12);color:var(--g);border:0.5px solid rgba(80,200,120,.3)}
+.chev{color:var(--tm);font-size:12px;transition:transform .2s}
+.mod.open .chev{transform:rotate(180deg)}
+.mod-bd{display:none;padding:0 1.125rem 1.125rem;border-top:.5px solid var(--bd)}
+.mod.open .mod-bd{display:block}
+
+/* TYPOGRAPHY */
+.p{font-size:13px;color:var(--tm);line-height:1.8;font-weight:300;margin-top:.875rem}
+.p strong{color:var(--t);font-weight:500}
+.hb{background:var(--c2);border-left:2px solid var(--r);border-radius:4px;padding:.75rem 1rem;margin:.75rem 0;font-size:12px;color:var(--t);font-family:var(--mono);line-height:1.7}
+.hb.o{border-left-color:var(--o)}
+.hb.p{border-left-color:var(--p)}
+.hb.g{border-left-color:var(--g)}
+.hb.b{border-left-color:var(--b)}
+
+/* BUTTONS */
+.btn{font-family:var(--mono);font-size:11px;padding:7px 14px;border:0.5px solid var(--bd2);background:var(--c2);color:var(--t);border-radius:4px;cursor:pointer;transition:all .15s;letter-spacing:.04em}
+.btn:hover{background:var(--c3);border-color:rgba(255,255,255,.2)}
+.btn.pri{background:var(--r);border-color:var(--r);color:#fff}
+.btn.pri:hover{opacity:.9}
+.btn.sml{padding:5px 10px;font-size:10px}
+.btn-row{display:flex;gap:7px;flex-wrap:wrap;margin-top:.75rem}
+
+/* ===== PIANO ROLL ===== */
+.piano-outer{margin:.875rem 0;overflow-x:auto}
+.piano-keys{display:flex;gap:0;margin-bottom:.5rem}
+.key{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:4px;cursor:pointer;border-radius:0 0 3px 3px;transition:all .1s;user-select:none;flex-shrink:0}
+.key.wh{width:28px;height:70px;background:rgba(255,255,255,.08);border:0.5px solid rgba(255,255,255,.14);font-family:var(--mono);font-size:8px;color:var(--tl)}
+.key.wh:hover,.key.wh.lit{background:rgba(255,77,77,.25);color:var(--r)}
+.key.wh.active-scale{background:rgba(255,77,77,.18);border-color:rgba(255,77,77,.4);color:rgba(255,77,77,.8)}
+.key.bk{width:19px;height:44px;background:rgba(255,255,255,.15);border:0.5px solid rgba(255,255,255,.2);margin:0 -9.5px;z-index:2;font-family:var(--mono);font-size:7px;color:var(--tl)}
+.key.bk:hover,.key.bk.lit{background:rgba(255,77,77,.45)}
+.key.bk.active-scale{background:rgba(255,77,77,.35);border-color:rgba(255,77,77,.6)}
+.piano-label{display:flex;gap:4px;margin-top:.25rem;flex-wrap:wrap}
+
+/* ===== CHORD BUILDER ===== */
+.chord-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:.75rem}
+.chord-card{background:var(--c2);border:0.5px solid var(--bd);border-radius:5px;padding:10px 8px;cursor:pointer;transition:all .15s;text-align:center}
+.chord-card:hover{border-color:var(--bd2);background:var(--c3)}
+.chord-card.active{border-color:var(--r);background:rgba(255,77,77,.1)}
+.chord-name{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--t)}
+.chord-type{font-size:9px;color:var(--tm);margin-top:2px;font-family:var(--mono)}
+.chord-notes{margin-top:.75rem;background:var(--c2);border-radius:4px;padding:.6rem .875rem;font-family:var(--mono);font-size:11px;color:var(--t);min-height:36px}
+
+/* ===== PROG BUILDER ===== */
+.prog-slots{display:flex;gap:8px;margin:.75rem 0;flex-wrap:wrap}
+.prog-slot{width:70px;height:60px;background:var(--c2);border:0.5px solid var(--bd);border-radius:5px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all .15s}
+.prog-slot:hover{border-color:rgba(255,77,77,.4)}
+.prog-slot .sn{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--r)}
+.prog-slot .sc{font-size:10px;color:var(--tm);margin-top:2px}
+.prog-slot.filled{background:rgba(255,77,77,.08);border-color:rgba(255,77,77,.3)}
+.prog-presets{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:.75rem 0}
+.prog-pre{background:var(--c2);border:0.5px solid var(--bd);border-radius:5px;padding:8px 10px;cursor:pointer;transition:all .15s}
+.prog-pre:hover{border-color:rgba(255,154,60,.4)}
+.prog-pre .pn{font-family:var(--mono);font-size:10px;color:var(--o);font-weight:700}
+.prog-pre .pd{font-size:11px;color:var(--tm);margin-top:3px}
+
+/* ===== SEQUENCER ===== */
+.seq-row{margin-bottom:6px}
+.seq-lbl{font-family:var(--mono);font-size:9px;color:var(--tm);margin-bottom:4px;display:flex;align-items:center;gap:6px;letter-spacing:.05em}
+.seq-lbl span{width:6px;height:6px;border-radius:50%;display:inline-block;flex-shrink:0}
+.beat-grid{display:grid;grid-template-columns:repeat(16,1fr);gap:2px}
+.bc{height:24px;border-radius:2px;border:0.5px solid var(--bd);background:var(--c2);cursor:pointer;transition:all .08s;position:relative}
+.bc:hover{border-color:rgba(255,77,77,.4)}
+.bc.on{background:var(--r);border-color:var(--r)}
+.bc.on.snr{background:var(--p);border-color:var(--p)}
+.bc.on.hht{background:var(--o);border-color:var(--o)}
+.bc.on.bas{background:var(--b);border-color:var(--b)}
+.bc.cur{box-shadow:inset 0 0 0 1px rgba(255,255,255,.6)}
+.bc.beat1{opacity:.5}
+.bar-div{background:rgba(255,255,255,.15);width:1px;position:absolute;right:-1px;top:0;bottom:0;pointer-events:none}
+.seq-ctrl{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:.75rem}
+.bpm-inp{width:56px;padding:5px 7px;background:var(--c2);border:0.5px solid var(--bd);border-radius:4px;color:var(--t);font-family:var(--mono);font-size:11px}
+.pattern-btns{display:flex;gap:5px;flex-wrap:wrap;margin-top:.5rem}
+.pat-btn{font-size:9px;padding:4px 8px;border:0.5px solid var(--bd);background:var(--c2);color:var(--tm);border-radius:3px;cursor:pointer;font-family:var(--mono);transition:all .15s;letter-spacing:.04em}
+.pat-btn:hover{color:var(--t);border-color:var(--bd2)}
+.pat-btn.active-pat{background:rgba(255,154,60,.15);color:var(--o);border-color:rgba(255,154,60,.4)}
+
+/* ===== BPM ===== */
+.bpm-big{font-family:var(--mono);font-size:52px;font-weight:700;color:var(--r);text-align:center;line-height:1;margin:.5rem 0}
+.bpm-sub{text-align:center;font-size:10px;color:var(--tm);font-family:var(--mono);letter-spacing:.08em;margin-bottom:.875rem}
+.tap-btn{width:100%;padding:1.125rem;background:var(--c2);border:0.5px solid var(--bd);border-radius:var(--rad);color:var(--t);font-family:var(--mono);font-size:13px;cursor:pointer;transition:all .08s;letter-spacing:.08em}
+.tap-btn:active{background:rgba(255,77,77,.2);border-color:var(--r);transform:scale(.99)}
+.genre-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:.75rem}
+.genre-btn{padding:7px 4px;background:var(--c2);border:0.5px solid var(--bd);border-radius:4px;color:var(--tm);font-family:var(--mono);font-size:9px;cursor:pointer;text-align:center;transition:all .15s;letter-spacing:.03em}
+.genre-btn:hover{color:var(--o);border-color:rgba(255,154,60,.4)}
+.genre-bpm{font-size:13px;font-weight:700;display:block;margin-bottom:2px}
+
+/* ===== EAR TRAINING ===== */
+.ear-display{background:var(--c2);border-radius:var(--rad);padding:1.125rem;text-align:center;margin:.875rem 0}
+.ear-note{font-family:var(--mono);font-size:40px;font-weight:700;color:var(--p);line-height:1}
+.ear-sub{font-size:11px;color:var(--tm);margin-top:4px}
+.ear-opts{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:.75rem 0}
+.ear-opt{padding:10px;background:var(--c2);border:0.5px solid var(--bd);border-radius:5px;color:var(--tm);font-family:var(--mono);font-size:11px;cursor:pointer;text-align:center;transition:all .15s}
+.ear-opt:hover{color:var(--t);border-color:var(--bd2)}
+.ear-opt.ok{background:rgba(80,200,120,.12);border-color:var(--g);color:var(--g)}
+.ear-opt.ko{background:rgba(255,77,77,.1);border-color:rgba(255,77,77,.4);color:rgba(255,77,77,.7)}
+.ear-streak{font-family:var(--mono);font-size:11px;color:var(--o);text-align:right;margin-bottom:.5rem}
+
+/* ===== FL STUDIO / REKORDBOX ===== */
+.sw-tabs{display:flex;gap:4px;margin:.875rem 0 .75rem}
+.sw-tab{padding:6px 14px;border:0.5px solid var(--bd);border-radius:4px;font-family:var(--mono);font-size:10px;color:var(--tm);cursor:pointer;transition:all .15s}
+.sw-tab.active{background:var(--b);border-color:var(--b);color:#fff}
+.sw-tab.rkb.active{background:var(--g);border-color:var(--g)}
+.sw-panel{display:none}
+.sw-panel.active{display:block}
+.step-cards{display:flex;flex-direction:column;gap:7px;margin-top:.75rem}
+.step-card{background:var(--c2);border:0.5px solid var(--bd);border-radius:5px;padding:.875rem 1rem;display:flex;gap:.875rem;align-items:flex-start}
+.step-num{font-family:var(--mono);font-size:18px;font-weight:700;color:var(--r);flex-shrink:0;width:24px;line-height:1}
+.step-card.fl-style .step-num{color:var(--b)}
+.step-card.rk-style .step-num{color:var(--g)}
+.step-body .st{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--t);margin-bottom:4px}
+.step-body .sd{font-size:12px;color:var(--tm);line-height:1.65;font-weight:300}
+.step-body .sk{display:inline-block;background:var(--c3);border:0.5px solid var(--bd2);border-radius:3px;padding:1px 5px;font-family:var(--mono);font-size:9px;color:var(--t);margin:1px}
+.tip-box{background:var(--c2);border:0.5px solid var(--bd);border-radius:5px;padding:.875rem 1rem;margin:.75rem 0}
+.tip-hd{font-family:var(--mono);font-size:10px;color:var(--o);font-weight:700;margin-bottom:.5rem;letter-spacing:.05em}
+.tip-list{list-style:none;display:flex;flex-direction:column;gap:6px}
+.tip-list li{font-size:12px;color:var(--tm);padding-left:1rem;position:relative;line-height:1.6}
+.tip-list li::before{content:'→';position:absolute;left:0;color:var(--r);font-family:var(--mono)}
+.tip-list li strong{color:var(--t);font-weight:500}
+.workflow-vis{display:flex;align-items:center;gap:4px;margin:.75rem 0;overflow-x:auto;padding-bottom:4px}
+.wf-step{flex-shrink:0;background:var(--c2);border:0.5px solid var(--bd);border-radius:4px;padding:6px 10px;font-family:var(--mono);font-size:9px;color:var(--tm);text-align:center;white-space:nowrap}
+.wf-step.hi{border-color:rgba(56,178,248,.4);color:var(--b)}
+.wf-step.hi.g{border-color:rgba(80,200,120,.4);color:var(--g)}
+.wf-arr{color:var(--tl);font-size:10px;flex-shrink:0}
+.shortcut-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin:.75rem 0}
+.sc-item{background:var(--c2);border:0.5px solid var(--bd);border-radius:4px;padding:7px 9px;display:flex;justify-content:space-between;align-items:center}
+.sc-label{font-size:11px;color:var(--tm)}
+.sc-key{font-family:var(--mono);font-size:9px;background:var(--c3);border:0.5px solid var(--bd2);border-radius:3px;padding:2px 6px;color:var(--t)}
+
+/* ===== QUIZ ===== */
+.quiz-prg{font-family:var(--mono);font-size:10px;color:var(--tm);margin-bottom:.75rem;letter-spacing:.06em;display:flex;justify-content:space-between}
+.quiz-q{font-size:14px;color:var(--t);margin-bottom:.875rem;line-height:1.65}
+.quiz-cat{font-family:var(--mono);font-size:9px;color:var(--r);letter-spacing:.08em;margin-bottom:.5rem}
+.quiz-opts{display:grid;gap:5px}
+.qo{padding:9px 1rem;background:var(--c2);border:0.5px solid var(--bd);border-radius:5px;color:var(--tm);font-size:12px;cursor:pointer;text-align:left;font-family:var(--sans);transition:all .15s}
+.qo:hover{border-color:var(--bd2);color:var(--t)}
+.qo.ok{background:rgba(80,200,120,.1);border-color:var(--g);color:var(--g)}
+.qo.ko{background:rgba(255,77,77,.08);border-color:rgba(255,77,77,.35);color:rgba(255,77,77,.75)}
+.q-fb{margin-top:.625rem;font-size:12px;padding:.625rem .875rem;border-radius:5px;display:none;line-height:1.6}
+.q-fb.show{display:block}
+.q-fb.ok{background:rgba(80,200,120,.08);color:var(--g);border:0.5px solid rgba(80,200,120,.25)}
+.q-fb.ko{background:rgba(255,77,77,.08);color:var(--r);border:0.5px solid rgba(255,77,77,.25)}
+.q-next{margin-top:.625rem;font-family:var(--mono);font-size:11px;padding:7px 14px;background:var(--c2);border:0.5px solid var(--bd);border-radius:4px;color:var(--t);cursor:pointer;display:none}
+.q-next.show{display:inline-block}
+.score-big{font-family:var(--mono);font-size:44px;font-weight:700;color:var(--r);text-align:center;padding:1.5rem 0 .25rem}
+.score-msg{text-align:center;font-size:12px;color:var(--tm);font-family:var(--mono)}
+
+/* ===== CAMELOT ===== */
+.cam-wrap{display:flex;justify-content:center;margin:.875rem 0}
+.cam-info{background:var(--c2);border-radius:4px;padding:.75rem 1rem;font-family:var(--mono);font-size:11px;color:var(--t);margin-top:.5rem;min-height:36px;border:0.5px solid var(--bd)}
+.cam-guide{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:.75rem 0}
+.cam-rule{background:var(--c2);border:0.5px solid var(--bd);border-radius:4px;padding:8px 10px}
+.cam-rule .cr-title{font-family:var(--mono);font-size:9px;color:var(--o);margin-bottom:3px;letter-spacing:.05em}
+.cam-rule .cr-desc{font-size:11px;color:var(--tm);line-height:1.55}
+
+/* NOTIFICATIONS */
+.xp-notif{position:fixed;top:1rem;right:1rem;background:var(--r);color:#fff;font-family:var(--mono);font-size:11px;padding:7px 14px;border-radius:4px;opacity:0;transform:translateY(-10px);transition:all .3s;pointer-events:none;z-index:100}
+.xp-notif.show{opacity:1;transform:translateY(0)}
+
+/* SCALE PICKER */
+.scale-root{display:flex;gap:4px;flex-wrap:wrap;margin:.5rem 0}
+.rt-btn{padding:4px 9px;border:0.5px solid var(--bd);border-radius:3px;font-family:var(--mono);font-size:10px;color:var(--tm);cursor:pointer;transition:all .12s}
+.rt-btn:hover{color:var(--t)}
+.rt-btn.sharp{color:rgba(255,77,77,.6)}
+.rt-btn.active{background:rgba(255,77,77,.15);color:var(--r);border-color:rgba(255,77,77,.4)}
+.scale-types{display:flex;gap:4px;flex-wrap:wrap;margin:.5rem 0}
+.st-btn{padding:4px 9px;border:0.5px solid var(--bd);border-radius:3px;font-family:var(--mono);font-size:9px;color:var(--tm);cursor:pointer;transition:all .12s}
+.st-btn:hover{color:var(--t)}
+.st-btn.active{background:rgba(160,128,255,.12);color:var(--p);border-color:rgba(160,128,255,.4)}
+.scale-out{background:var(--c2);border-radius:4px;padding:.75rem 1rem;font-family:var(--mono);font-size:12px;color:var(--t);margin-top:.5rem;border:0.5px solid var(--bd);min-height:40px;line-height:1.7}
+
+/* PROGRESS STARS */
+.stars{display:flex;gap:3px}
+.star{font-size:12px;opacity:.25}
+.star.lit{opacity:1}
+</style>
+</head>
+<body>
+<div class="xp-notif" id="xp-notif"></div>
+<div class="app">
+<h2 style="position:absolute;width:1px;height:1px;overflow:hidden">Studio Learn — Théorie musicale interactive</h2>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-bg"></div>
+  <h1>STUDIO<em>LEARN</em> <span style="font-size:10px;color:var(--tm);font-weight:400">v2.0</span></h1>
+  <p>Théorie musicale · Beat-making · DJing · FL Studio · Rekordbox</p>
+  <div class="xp-bar-wrap">
+    <div class="xp-row"><span class="xp-label">PROGRESSION</span><span class="xp-lvl" id="xp-lvl">Niveau 1 — Beatmaker en herbe</span></div>
+    <div class="xp-bar"><div class="xp-fill" id="xp-fill"></div></div>
+    <div class="xp-badges" id="xp-badges">
+      <span class="badge locked" data-id="rythme">🥁 Rythmicien</span>
+      <span class="badge locked" data-id="gammes">🎵 Mélodiste</span>
+      <span class="badge locked" data-id="chords">🎹 Harmoniste</span>
+      <span class="badge locked" data-id="ear">👂 Oreille d'or</span>
+      <span class="badge locked" data-id="fl">💻 FL Rookie</span>
+      <span class="badge locked" data-id="quiz">🏆 Quiz Master</span>
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="nav">
+  <button class="nb active" onclick="goTab('rythme',this)"><span class="dot"></span>RYTHME</button>
+  <button class="nb" onclick="goTab('gammes',this)"><span class="dot"></span>GAMMES</button>
+  <button class="nb" onclick="goTab('accords',this)"><span class="dot"></span>ACCORDS</button>
+  <button class="nb" onclick="goTab('oreille',this)"><span class="dot"></span>OREILLE</button>
+  <button class="nb" onclick="goTab('daw',this)"><span class="dot"></span>FL + RKB</button>
+  <button class="nb" onclick="goTab('quiz',this)"><span class="dot"></span>QUIZ</button>
+</div>
+
+<!-- ========================= RYTHME ========================= -->
+<div class="sec active" id="s-rythme">
+
+  <div class="mod open">
+    <div class="mod-hd" onclick="tog(this)">
+      <span class="mod-title">BPM — Tap Tempo & Genres</span>
+      <div class="mod-right"><span class="tag t-a">BEAT + DJ</span><span class="chev">▾</span></div>
+    </div>
+    <div class="mod-bd">
+      <div class="bpm-big" id="bpm-disp">---</div>
+      <div class="bpm-sub">BEATS PER MINUTE</div>
+      <button class="tap-btn" id="tap-btn" onclick="doTap()">TAP ICI — frappe au rythme de la musique</button>
+      <div class="genre-grid">
+        <div class="genre-btn" onclick="snapBPM(70,'TRAP\nLente')"><span class="genre-bpm">70</span>TRAP LENTE</div>
+        <div class="genre-btn" onclick="snapBPM(90,'HIP-HOP')"><span class="genre-bpm">90</span>HIP-HOP</div>
+        <div class="genre-btn" onclick="snapBPM(105,'UK GARAGE')"><span class="genre-bpm">105</span>UK GARAGE</div>
+        <div class="genre-btn" onclick="snapBPM(125,'HOUSE')"><span class="genre-bpm">125</span>HOUSE</div>
+        <div class="genre-btn" onclick="snapBPM(132,'TECHNO')"><span class="genre-bpm">132</span>TECHNO</div>
+        <div class="genre-btn" onclick="snapBPM(140,'DRUM&BASS\nHalftime')"><span class="genre-bpm">140</span>D&B HALF</div>
+        <div class="genre-btn" onclick="snapBPM(174,'DRUM&BASS')"><span class="genre-bpm">174</span>DRUM&BASS</div>
+        <div class="genre-btn" onclick="snapBPM(150,'HARDSTYLE')"><span class="genre-bpm">150</span>HARDSTYLE</div>
+      </div>
+      <div class="p">Le BPM détermine l'énergie. En DJ, les platines virtuelles permettent le <strong>pitch shift</strong> (±8% sans distorsion audible). En beat-making, il conditionne la vitesse de ton séquenceur.</div>
+    </div>
+  </div>
+
+  <div class="mod open">
+    <div class="mod-hd" onclick="tog(this)">
+      <span class="mod-title">Séquenceur 16 pas — Drum Machine</span>
+      <div class="mod-right"><span class="tag t-b">BEAT</span><span class="tag t-fl">FL STUDIO</span><span class="chev">▾</span></div>
+    </div>
+    <div class="mod-bd">
+      <div class="p" style="margin-top:.5rem">En <strong>4/4</strong>, une mesure = 16 doubles-croches. Clique les cellules pour allumer/éteindre. Les séparateurs = temps forts (1, 2, 3, 4).</div>
+      <div style="margin:.875rem 0">
+        <div class="seq-row"><div class="seq-lbl"><span style="background:var(--r)"></span>KICK</div><div class="beat-grid" id="g-kick"></div></div>
+        <div class="seq-row"><div class="seq-lbl"><span style="background:var(--p)"></span>SNARE / CLAP</div><div class="beat-grid" id="g-snare"></div></div>
+        <div class="seq-row"><div class="seq-lbl"><span style="background:var(--o)"></span>HI-HAT</div><div class="beat-grid" id="g-hihat"></div></div>
+        <div class="seq-row"><div class="seq-lbl"><span style="background:var(--b)"></span>BASS / 808</div><div class="beat-grid" id="g-bass"></div></div>
+      </div>
+      <div class="seq-ctrl">
+        <button class="btn pri" id="play-btn" onclick="togPlay()">▶ PLAY</button>
+        <button class="btn" onclick="clrGrid()">CLEAR</button>
+        <span style="font-family:var(--mono);font-size:10px;color:var(--tm)">BPM</span>
+        <input class="bpm-inp" type="number" id="seq-bpm" value="90" min="40" max="220">
+        <button class="btn sml" onclick="randGrid()">🎲 RANDOM</button>
+      </div>
+      <div class="pattern-btns" id="pattern-btns">
+        <button class="pat-btn active-pat" onclick="loadPat('boom')">BOOM BAP</button>
+        <button class="pat-btn" onclick="loadPat('trap')">TRAP</button>
+        <button class="pat-btn" onclick="loadPat('house')">HOUSE</button>
+        <button class="pat-btn" onclick="loadPat('dnb')">D&B</button>
+        <button class="pat-btn" onclick="loadPat('reggaeton')">REGGAETON</button>
+        <button class="pat-btn" onclick="loadPat('afro')">AFROBEATS</button>
+      </div>
+      <div class="hb o" style="margin-top:.75rem;font-size:11px">💡 En FL Studio : chaque ligne = un canal dans le <strong>Step Sequencer</strong>. F6 pour l'ouvrir, Space pour play/stop.</div>
+    </div>
+  </div>
+
+  <div class="mod">
+    <div class="mod-hd" onclick="tog(this)">
+      <span class="mod-title">Structures de morceaux — Anatomie</span>
+      <div class="mod-right"><span class="tag t-a">BEAT + DJ</span><span class="chev">▾</span></div>
+    </div>
+    <div class="mod-bd">
+      <div class="p">Toute musique électronique suit des structures basées sur des <strong>multiples de 4 mesures</strong>. C'est pourquoi les DJs mixent aux changements de 16 ou 32 temps.</div>
+      <div style="margin:.875rem 0">
+        <div style="font-family:var(--mono);font-size:9px;color:var(--tm);margin-bottom:6px;letter-spacing:.06em">STRUCTURE TYPIQUE TRACK ÉLECTRONIQUE</div>
+        <div class="workflow-vis">
+          <div class="wf-step">INTRO<br><span style="color:var(--r);font-size:8px">32 mes.</span></div><div class="wf-arr">→</div>
+          <div class="wf-step hi">BUILD UP<br><span style="font-size:8px">8–16 mes.</span></div><div class="wf-arr">→</div>
+          <div class="wf-step" style="border-color:rgba(255,77,77,.5);color:var(--r)">DROP<br><span style="font-size:8px">32 mes.</span></div><div class="wf-arr">→</div>
+          <div class="wf-step hi g">BREAK<br><span style="font-size:8px">16 mes.</span></div><div class="wf-arr">→</div>
+          <div class="wf-step" style="border-color:rgba(255,77,77,.5);color:var(--r)">DROP<br><span style="font-size:8px">32 mes.</span></div><div class="wf-arr">→</div>
+          <div class="wf-step">OUTRO<br><span style="color:var(--r);font-size:8px">16 mes.</span></div>
+        </div>
+      </div>
+      <div class="hb p" style="font-size:11px">Pour le hip-hop/trap : Intro (4–8) → Verse (16) → Hook (8) → Verse (16) → Hook (8) → Bridge (8) → Hook (8) → Outro (4)</div>
+    </div>
+  </div>
+</div>
+
+<!-- ========================= GAMMES ========================= -->
+<div class="sec" id="s-gammes">
+  <div class="mod open">
+    <div class="mod-hd" onclick="tog(this)">
+      <span class="mod-title">Piano interactif — Gammes & modes</span>
+      <div class="mod-right"><span class="tag t-b">BEAT</span><span class="chev">▾</span></div>
+    </div>
+    <div class="mod-bd">
+      <p style="font-size:12px;color:var(--tm);margin-top:.625rem">Choisis une fondamentale :</p>
+      <div class="scale-root" id="scale-root"></div>
+      <p style="font-size:12px;color:var(--tm);margin-top:.5rem">Type de gamme / mode :</p>
+      <div class="scale-types" id="scale-types"></div>
+      <div class="piano-outer"><div class="piano-keys" id="piano-keys"></div></div>
+      <div class="scale-out" id="scale-out">← Sélectionne une note de départ</div>
+    </div>
+  </div>
+
+  <div class="mod">
+    <div class="mod-hd" onclick="tog(this)">
+      <span class="mod-title">Gammes essentielles par genre</span>
+      <div class="mod-right"><span class="tag t-b">BEAT</span><span class="chev">▾</span></div>
+    </div>
+    <div class="mod-bd">
+      <div class="hb" style="font-size:11px"><strong>Penta mineure</strong> → Universal, hip-hop, soul, R&B<br><strong>Dorien</strong> → Funk, jazz-hop, lo-fi, smooth soul<br><strong>Phrygien</strong> → Trap, rap espagnol, Middle East vibes<br><strong>Blues</strong> → Boom bap, old school, gospel<br><strong>Lydien</strong> → Rêveur, cinématique, lo-fi chill<br><strong>Mineur harmonique</strong> → Dramatique, cinematic, drill</div>
+      <div class="hb o" style="font-size:11px">💡 <strong>Règle d'or :</strong> commence par la penta mineure. 5 notes = impossible de faire une fausse note. Parfait pour improviser sur n'importe quel beat mineur.</div>
+    </div>
+  </div>
+
+  <div class="mod">
+    <div class="mod-hd" onclick="tog(this)">
+      <span class="mod-title">La roue des quintes & Camelot</span>
+      <div class="mod-right"><span class="tag t-a">BEAT + DJ</span><span class="chev">▾</span></div>
+    </div>
+    <div class="mod-bd">
+      <div class="p">Clique sur une clé pour voir sa compatibilité :</div>
+      <div class="cam-wrap"><svg id="cam-svg" width="260" height="260" viewBox="0 0 260 260" role="img"><title>Roue Camelot</title></svg></div>
+      <div class="cam-info" id="cam-info">Clique sur une section de la roue →</div>
+      <div class="cam-guide">
+        <div class="cam-rule"><div class="cr-title">MÊME CLÉ</div><div class="cr-desc">Même lettre + chiffre : parfaitement compatibles</div></div>
+        <div class="cam-rule"><div class="cr-title">±1 CHIFFRE</div><div class="cr-desc">Voisin dans la roue : très compatible, transitions fluides</div></div>
+        <div class="cam-rule"><div class="cr-title">A ↔ B</div><div class="cr-desc">Même chiffre, changer de lettre = relatif maj/min</div></div>
+        <div class="cam-rule"><div class="cr-title">+3 CHIFFRES</div><div class="cr-desc">Changement d'ambiance tout en restant harmonique</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========================= ACCORDS ========================= -->
+<div class="sec" id="s-accords">
+  <div class="mod open">
+    <div class="mod-hd" onclick="tog(this)">
+      <span class="mod-title">Constructeur d'accords interactif</span>
+      <div class="mod-right"><span class="tag t-b">BEAT</span><span class="chev">▾</span></div>
+    </div>
+    <div class="mod-bd">
+      <p style="font-size:12px;color:var(--tm);margin-top:.625rem">Fondamentale :</p>
+      <div class="scale-root" id="chord-root"></div>
+      <p style="font-size:12px;color:var(--tm);margin-top:.5rem">Type d'accord :</p>
+      <div class="chord-grid" id="chord-grid"></div>
+      <div class="chord-notes" id="chord-notes">← Choisis une fondamentale et un type</div>
+      <div class="piano-outer"><div class="piano-keys" id="chord-piano"></div></div>
+    </div>
+  </div>
+
+  <div class="mod open">
+    <div class="mod-hd" onclick="tog(this)">
+      <span class="mod-title">Progressions d'accords — Presets genre</span>
+      <div class="mod-right"><span class="tag t-b">BEAT</span><span class="chev">▾</span></div>
+    </div>
+    <div class="mod-bd">
+      <div class="p">Les progressions en chiffres romains sont universelles — elles fonctionnent dans n'importe quelle tonalité. Clique pour jouer :</div>
+      <div class="prog-presets" id="prog-presets"></div>
+      <div class="hb p" style="font-size:11px;margin-top:.5rem" id="prog-explain">Sélectionne une progression →</div>
+    </div>
+  </div>
+
+  <div class="mod">
+    <div class="mod-hd" onclick="tog(this)">
+      <span class="mod-title">Extensions d'accords — La profondeur du son</span>
+      <div class="mod-right"><span class="tag t-b">BEAT</span><span class="chev">▾</span></div>
+    </div>
+    <div class="mod-bd">
+      <div class="hb" style="font-size:11px"><strong>Triade</strong> (3 notes) → Direct, efficace, pop / trap<br><strong>7ème mineure</strong> → Doux, jazzy, lo-fi, R&B<br><strong>7ème majeure</strong> → Lumineux, smooth, néo-soul<br><strong>9ème</strong> → Riche, plein, funk / gospel<br><strong>Sus2 / Sus4</strong> → Suspendu, ambiant, pas de tierce<br><strong>add9</strong> → Frais, moderne, pop contemporaine</div>
+      <div class="hb o" style="font-size:11px">💡 Astuce FL Studio : dans le <strong>Piano Roll</strong>, sélectionne toutes les notes d'un accord et utilise <span class="sk">Alt+G</span> pour les regrouper. Utilise <span class="sk">Ctrl+Q</span> pour quantizer.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ========================= OREILLE ========================= -->
+<div class="sec" id="s-oreille">
+  <div class="mod open">
+    <div class="mod-hd" onclick="tog(this)">
+      <span class="mod-title">Entraînement de l'oreille — Reconnais les intervalles</span>
+      <div class="mod-right"><span class="tag t-a">BEAT + DJ</span><span class="chev">▾</span></div>
+    </div>
+    <div class="mod-bd">
+      <div class="ear-streak" id="ear-streak">🔥 Série : 0</div>
+      <div class="ear-display">
+        <div class="ear-note" id="ear-note">?</div>
+        <div class="ear-sub" id="ear-sub">Écoute et identifie l'accord</div>
+      </div>
+      <div class="btn-row">
+        <button class="btn pri" onclick="playEarChord()">▶ JOUER L'ACCORD</button>
+        <button class="btn" onclick="newEarQ()">NOUVELLE QUESTION</button>
+      </div>
+      <div class="ear-opts" id="ear-opts"></div>
+      <div class="q-fb" id="ear-fb"></div>
+    </div>
+  </div>
+
+  <div class="mod">
+    <div class="mod-hd" onclick="tog(this)">
+      <span class="mod-title">Entraînement BPM — Estime le tempo</span>
+      <div class="mod-right"><span class="tag t-d">DJ</span><span class="chev">▾</span></div>
+    </div>
+    <div class="mod-bd">
+      <div class="p">Un bon DJ/beatmaker doit pouvoir estimer un BPM sans outil. Entraîne-toi ici : le métronome joue, tu devines le BPM.</div>
+      <div class="ear-display" style="margin:.75rem 0">
+        <div class="ear-note" id="bpm-guess-disp" style="color:var(--o)">?</div>
+        <div class="ear-sub">BPM secret — écoute le click</div>
+      </div>
+      <div class="btn-row">
+        <button class="btn pri" id="metro-btn" onclick="togMetro()">▶ DÉMARRER MÉTRONOME</button>
+      </div>
+      <div style="display:flex;gap:6px;margin-top:.75rem;align-items:center">
+        <input class="bpm-inp" type="number" id="bpm-guess-inp" placeholder="BPM?" min="60" max="200" style="width:80px;font-size:14px;padding:8px">
+        <button class="btn pri" onclick="checkBPMGuess()">VÉRIFIER</button>
+        <button class="btn" onclick="newBPMGuess()">NOUVEAU</button>
+      </div>
+      <div class="q-fb show" id="bpm-guess-fb" style="display:block;margin-top:.625rem;background:var(--c2);border-color:var(--bd);color:var(--tm)">Lance le métronome et essaie de deviner le BPM !</div>
+    </div>
+  </div>
+</div>
+
+<!-- ========================= FL + RKB ========================= -->
+<div class="sec" id="s-daw">
+  <div class="mod open">
+    <div class="mod-hd" onclick="tog(this)">
+      <span class="mod-title">Guide de démarrage — FL Studio & Rekordbox</span>
+      <div class="mod-right"><span class="tag t-fl">FL STUDIO</span><span class="tag t-rk">REKORDBOX</span><span class="chev">▾</span></div>
+    </div>
+    <div class="mod-bd">
+      <div class="sw-tabs">
+        <button class="sw-tab active" onclick="swDaw('fl',this)">🎛️ FL STUDIO</button>
+        <button class="sw-tab rkb" onclick="swDaw('rkb',this)">📀 REKORDBOX</button>
+      </div>
+
+      <!-- FL STUDIO -->
+      <div class="sw-panel active" id="daw-fl">
+        <div class="hb b" style="font-size:11px">FL Studio = <strong>Image-Line</strong> · Version gratuite (trial) disponible · Achat unique, mises à jour à vie</div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--tm);margin:.75rem 0 .5rem;letter-spacing:.06em">PREMIER DÉMARRAGE — EN 10 ÉTAPES</div>
+        <div class="step-cards">
+          <div class="step-card fl-style"><div class="step-num">1</div><div class="step-body"><div class="st">Installer & lancer</div><div class="sd">Télécharge FL Studio sur image-line.com. À l'ouverture, charge un <strong>template vide</strong> (New → Empty). Configure ton interface audio dans <span class="sk">Options → Audio Settings</span>.</div></div></div>
+          <div class="step-card fl-style"><div class="step-num">2</div><div class="step-body"><div class="st">Comprendre l'interface</div><div class="sd">4 fenêtres clés : <strong>Channel Rack</strong> (tes sons, F6) · <strong>Piano Roll</strong> (mélodie, F7) · <strong>Mixer</strong> (effets, F9) · <strong>Playlist</strong> (arrangement, F5). Garde-les en mémoire.</div></div></div>
+          <div class="step-card fl-style"><div class="step-num">3</div><div class="step-body"><div class="st">Ton premier beat</div><div class="sd">Dans le Channel Rack, clique <span class="sk">+</span> → <strong>Add Beat+Bassline</strong>. Choisis tes sons (Kick, Snare, HH). Active les cases dans le séquenceur. <span class="sk">Space</span> pour écouter.</div></div></div>
+          <div class="step-card fl-style"><div class="step-num">4</div><div class="step-body"><div class="st">Définir le BPM</div><div class="sd">En haut à gauche du toolbar : le compteur BPM. Clique-glisse pour changer. Ou <strong>tap tempo</strong> avec le bouton Tap. Commence à <strong>90 BPM</strong> pour un beat hip-hop classique.</div></div></div>
+          <div class="step-card fl-style"><div class="step-num">5</div><div class="step-body"><div class="st">Ajouter une mélodie (Piano Roll)</div><div class="sd">Ajoute un instrument virtuel (ex: <strong>PoiZone</strong> ou <strong>3xOSC</strong>). Double-clique sur une case de la Playlist → <strong>Piano Roll</strong> s'ouvre. Dessine tes notes à la souris. Quantize avec <span class="sk">Ctrl+Q</span>.</div></div></div>
+          <div class="step-card fl-style"><div class="step-num">6</div><div class="step-body"><div class="st">Samples & Sampleurs</div><div class="sd">Glisse un fichier audio (.wav, .mp3) depuis le <strong>Browser</strong> vers la Playlist ou un canal. Utilise <strong>Fruity Granulizer</strong> ou <strong>DirectWave</strong> pour manipuler les samples de façon créative.</div></div></div>
+          <div class="step-card fl-style"><div class="step-num">7</div><div class="step-body"><div class="st">La basse (808 / Sub)</div><div class="sd">Charge <strong>GMS</strong> ou un plugin 808. Dans le Piano Roll, dessine une note longue. Utilise le <strong>portamento</strong> (glide) entre les notes pour l'effet 808 glissant typique du trap.</div></div></div>
+          <div class="step-card fl-style"><div class="step-num">8</div><div class="step-body"><div class="st">Mixer & effets</div><div class="sd">Assigne chaque canal au Mixer (clic droit → <em>Assign to mixer track</em>). Ajoute <strong>Parametric EQ 2</strong> sur chaque piste. Règle les <strong>fréquences</strong> : coupe le bas sur hi-hat, boost mid sur snare.</div></div></div>
+          <div class="step-card fl-style"><div class="step-num">9</div><div class="step-body"><div class="st">Arrangement</div><div class="sd">Dans la <strong>Playlist</strong>, place tes patterns en blocs. Crée variation A (verse) et variation B (hook). Alterne-les. Ajoute des fills (1–2 mesures) aux transitions. Pense en <strong>multiples de 4 mesures</strong>.</div></div></div>
+          <div class="step-card fl-style"><div class="step-num">10</div><div class="step-body"><div class="st">Export</div><div class="sd"><span class="sk">File → Export → WAV</span>. Règle sur <strong>320kbps MP3</strong> ou <strong>WAV 24bit</strong>. Pour le partage : MP3. Pour le mastering : WAV. Coche "Split mixer tracks" pour envoyer tes stems à un ingé son.</div></div></div>
+        </div>
+
+        <div class="tip-box" style="margin-top:1rem">
+          <div class="tip-hd">⚡ RACCOURCIS ESSENTIELS FL STUDIO</div>
+          <div class="shortcut-grid">
+            <div class="sc-item"><span class="sc-label">Play / Stop</span><span class="sc-key">Space</span></div>
+            <div class="sc-item"><span class="sc-label">Piano Roll</span><span class="sc-key">F7</span></div>
+            <div class="sc-item"><span class="sc-label">Channel Rack</span><span class="sc-key">F6</span></div>
+            <div class="sc-item"><span class="sc-label">Mixer</span><span class="sc-key">F9</span></div>
+            <div class="sc-item"><span class="sc-label">Playlist</span><span class="sc-key">F5</span></div>
+            <div class="sc-item"><span class="sc-label">Quantizer</span><span class="sc-key">Ctrl+Q</span></div>
+            <div class="sc-item"><span class="sc-label">Undo</span><span class="sc-key">Ctrl+Z</span></div>
+            <div class="sc-item"><span class="sc-label">Sauvegarder</span><span class="sc-key">Ctrl+S</span></div>
+            <div class="sc-item"><span class="sc-label">Sélect tout</span><span class="sc-key">Ctrl+A</span></div>
+            <div class="sc-item"><span class="sc-label">Coller</span><span class="sc-key">Ctrl+B</span></div>
+            <div class="sc-item"><span class="sc-label">Couper notes</span><span class="sc-key">Ctrl+K</span></div>
+            <div class="sc-item"><span class="sc-label">Zoom in/out</span><span class="sc-key">Scroll</span></div>
+          </div>
+        </div>
+
+        <div class="tip-box">
+          <div class="tip-hd">🎯 PLUGINS GRATUITS INCONTOURNABLES (FL)</div>
+          <ul class="tip-list">
+            <li><strong>GMS (Groove Machine Synth)</strong> — synth polyvalent inclus, idéal 808 et leads</li>
+            <li><strong>Parametric EQ 2</strong> — égaliseur précis inclus, apprends-le en premier</li>
+            <li><strong>Fruity Reverb 2</strong> — réverb de qualité incluse</li>
+            <li><strong>FLEX</strong> — sampleur multi avec presets variés (inclus depuis FL 20.6)</li>
+            <li><strong>Vital</strong> (gratuit externe) — synth wavetable moderne, excellent pour leads et pads</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- REKORDBOX -->
+      <div class="sw-panel" id="daw-rkb">
+        <div class="hb g" style="font-size:11px">Rekordbox = logiciel officiel <strong>Pioneer DJ</strong> · Mode Performance gratuit · Export USB payant (ou abonnement)</div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--tm);margin:.75rem 0 .5rem;letter-spacing:.06em">PRÉPARER SES TRACKS — WORKFLOW COMPLET</div>
+        <div class="step-cards">
+          <div class="step-card rk-style"><div class="step-num">1</div><div class="step-body"><div class="st">Importer ta musique</div><div class="sd">Glisse tes fichiers audio dans Rekordbox. Il supporte <strong>MP3, FLAC, WAV, AIFF</strong>. Évite les MP3 < 320kbps — artefacts audibles sur gros systèmes. Organise en <strong>playlists par genre ou BPM</strong>.</div></div></div>
+          <div class="step-card rk-style"><div class="step-num">2</div><div class="step-body"><div class="st">Analyse automatique</div><div class="sd">Clic droit → <strong>Analyze Track</strong> (ou analyse en masse). Rekordbox détecte BPM, grille rythmique, tonalité (Camelot). <strong>Vérifie toujours</strong> la grille manuellement — les détections sont parfois fausses.</div></div></div>
+          <div class="step-card rk-style"><div class="step-num">3</div><div class="step-body"><div class="st">Corriger la grille rythmique</div><div class="sd">Clique sur la waveform pour ouvrir le <strong>Beat Grid Editor</strong>. Si la grille est décalée, utilise <em>Slip Grid</em> ou <em>Double/Half BPM</em>. Une grille correcte = sync parfait avec les autres platines.</div></div></div>
+          <div class="step-card rk-style"><div class="step-num">4</div><div class="step-body"><div class="st">Placer les Hot Cues</div><div class="sd">Les <strong>Hot Cues</strong> (touches A–H) marquent les points importants. Place-en sur : intro, drop, break, dernier drop. Convention : <strong>Cue A = début du drop</strong>. Appuie sur un pad pour y sauter instantanément.</div></div></div>
+          <div class="step-card rk-style"><div class="step-num">5</div><div class="step-body"><div class="st">Memory Cues & Loops</div><div class="sd">Les <strong>Memory Cues</strong> apparaissent dans la waveform comme repères visuels. Les <strong>Loops</strong> permettent de boucler une section (ex : 4 mesures du drop pendant que tu prépares le prochain titre).</div></div></div>
+          <div class="step-card rk-style"><div class="step-num">6</div><div class="step-body"><div class="st">Harmonic Mixing — Clé Camelot</div><div class="sd">Rekordbox affiche la clé Camelot de chaque titre. Active le filtre par clé dans la bibliothèque. Pour mixer harmoniquement : reste sur la même clé ou passe à ±1. Utilise <strong>Key Filter</strong> pour trouver les tracks compatibles.</div></div></div>
+          <div class="step-card rk-style"><div class="step-num">7</div><div class="step-body"><div class="st">Exporter sur USB</div><div class="sd">Branche une clé USB formatée <strong>FAT32 ou HFS+</strong>. Dans Rekordbox : <em>File → Export to Device</em>. Sélectionne tes playlists. Les CDJ/XDJ de Pioneer liront ta bibliothèque avec toutes les données (cues, grilles, key).</div></div></div>
+          <div class="step-card rk-style"><div class="step-num">8</div><div class="step-body"><div class="st">Mode Performance</div><div class="sd">Avec une interface DJ connectée (ou Pioneer DDJ), passe en mode <strong>Performance</strong>. Tes decks A et B sont prêtes. Utilise le <strong>EQ 3 bandes</strong> pour les transitions : coupe les basses du track entrant avant de les remonter progressivement.</div></div></div>
+        </div>
+
+        <div class="tip-box" style="margin-top:1rem">
+          <div class="tip-hd">🎯 TECHNIQUES DE MIXAGE ESSENTIELLES</div>
+          <ul class="tip-list">
+            <li><strong>EQ Mix :</strong> coupe les basses du track B, booste sur A → inversé quand le drop arrive</li>
+            <li><strong>Filter Transition :</strong> passe un filtre passe-haut sur le track sortant pendant la transition</li>
+            <li><strong>Loop out :</strong> loupe 8 mesures du track sortant pendant que tu cherches le bon moment</li>
+            <li><strong>Phrase mixing :</strong> mixe toujours au début d'une phrase de 4 ou 8 mesures — jamais au milieu</li>
+            <li><strong>Gain matching :</strong> avant de mixer, égalise les niveaux — les VU-mètres à la même hauteur</li>
+          </ul>
+        </div>
+
+        <div class="tip-box">
+          <div class="tip-hd">⚡ RACCOURCIS REKORDBOX CLAVIER</div>
+          <div class="shortcut-grid">
+            <div class="sc-item"><span class="sc-label">Analyze selected</span><span class="sc-key">Ctrl+Shift+A</span></div>
+            <div class="sc-item"><span class="sc-label">Add Hot Cue</span><span class="sc-key">Ctrl+1-8</span></div>
+            <div class="sc-item"><span class="sc-label">Loop In</span><span class="sc-key">I</span></div>
+            <div class="sc-item"><span class="sc-label">Loop Out</span><span class="sc-key">O</span></div>
+            <div class="sc-item"><span class="sc-label">Zoom Waveform</span><span class="sc-key">+/-</span></div>
+            <div class="sc-item"><span class="sc-label">Beat Grid Editor</span><span class="sc-key">Ctrl+G</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========================= QUIZ ========================= -->
+<div class="sec" id="s-quiz">
+  <div class="mod open">
+    <div class="mod-hd" onclick="tog(this)">
+      <span class="mod-title">Quiz — Toutes catégories</span>
+      <div class="mod-right"><span class="tag t-a">BEAT + DJ</span><span class="chev">▾</span></div>
+    </div>
+    <div class="mod-bd" id="quiz-body"></div>
+  </div>
+</div>
+
+</div><!-- /app -->
+
+<script>
+// ============ GLOBALS ============
+const N=['Do','Do#','Ré','Ré#','Mi','Fa','Fa#','Sol','Sol#','La','La#','Si'];
+const NEN=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+const PIANO_LAYOUT=[
+  {n:'Do',t:'w'},{n:'Do#',t:'b'},{n:'Ré',t:'w'},{n:'Ré#',t:'b'},{n:'Mi',t:'w'},
+  {n:'Fa',t:'w'},{n:'Fa#',t:'b'},{n:'Sol',t:'w'},{n:'Sol#',t:'b'},{n:'La',t:'w'},{n:'La#',t:'b'},{n:'Si',t:'w'}
+];
+const SCALES={
+  major:{label:'Majeure',ivx:[0,2,4,5,7,9,11]},
+  minor:{label:'Mineure nat.',ivx:[0,2,3,5,7,8,10]},
+  penta_maj:{label:'Penta maj.',ivx:[0,2,4,7,9]},
+  penta_min:{label:'Penta min.',ivx:[0,3,5,7,10]},
+  blues:{label:'Blues',ivx:[0,3,5,6,7,10]},
+  dorian:{label:'Dorien',ivx:[0,2,3,5,7,9,10]},
+  phrygian:{label:'Phrygien',ivx:[0,1,3,5,7,8,10]},
+  lydian:{label:'Lydien',ivx:[0,2,4,6,7,9,11]},
+  harm_min:{label:'Min. harm.',ivx:[0,2,3,5,7,8,11]},
+};
+const CHORDS={
+  maj:{label:'Maj',ivx:[0,4,7],color:'#FF9A3C'},
+  min:{label:'Min',ivx:[0,3,7],color:'#A080FF'},
+  dom7:{label:'Dom7',ivx:[0,4,7,10],color:'#FF4D4D'},
+  maj7:{label:'Maj7',ivx:[0,4,7,11],color:'#38B2F8'},
+  min7:{label:'Min7',ivx:[0,3,7,10],color:'#50C878'},
+  dim:{label:'Dim',ivx:[0,3,6],color:'#FF6B6B'},
+  aug:{label:'Aug',ivx:[0,4,8],color:'#FFD93D'},
+  sus2:{label:'Sus2',ivx:[0,2,7],color:'#C9A96E'},
+  sus4:{label:'Sus4',ivx:[0,5,7],color:'#7EC8E3'},
+  add9:{label:'Add9',ivx:[0,4,7,14],color:'#FF85C1'},
+  min9:{label:'Min9',ivx:[0,3,7,10,14],color:'#B39DDB'},
+  maj9:{label:'Maj9',ivx:[0,4,7,11,14],color:'#80DEEA'},
+};
+const CAMELOT=[
+  {maj:'Do',min:'La',camM:'8B',camm:'8A'},
+  {maj:'Sol',min:'Mi',camM:'9B',camm:'9A'},
+  {maj:'Ré',min:'Si',camM:'10B',camm:'10A'},
+  {maj:'La',min:'Fa#',camM:'11B',camm:'11A'},
+  {maj:'Mi',min:'Do#',camM:'12B',camm:'12A'},
+  {maj:'Si',min:'Sol#',camM:'1B',camm:'1A'},
+  {maj:'Fa#',min:'Ré#',camM:'2B',camm:'2A'},
+  {maj:'Ré♭',min:'Si♭',camM:'3B',camm:'3A'},
+  {maj:'La♭',min:'Fa',camM:'4B',camm:'4A'},
+  {maj:'Mi♭',min:'Do',camM:'5B',camm:'5A'},
+  {maj:'Si♭',min:'Sol',camM:'6B',camm:'6A'},
+  {maj:'Fa',min:'Ré',camM:'7B',camm:'7A'},
+];
+const PROGRESSIONS=[
+  {name:'Pop universelle',roman:'I – V – VI – IV',example:'Do – Sol – La min – Fa',genres:'Hip-hop, pop, R&B'},
+  {name:'Blues classique',roman:'I – IV – V',example:'La – Ré – Mi',genres:'Old school, boom bap'},
+  {name:'Tension & release',roman:'II – V – I',example:'Ré min – Sol – Do',genres:'Jazz, neo-soul, lo-fi'},
+  {name:'La progressione',roman:'VI – IV – I – V',example:'La min – Fa – Do – Sol',genres:'Emo, pop, hip-hop triste'},
+  {name:'Trap boucle',roman:'I – VI',example:'Do min – La♭',genres:'Trap, drill, dark rap'},
+  {name:'Boom bap moody',roman:'I – VII – VI – VII',example:'La min – Sol – Fa – Sol',genres:'Boom bap, lo-fi, UK rap'},
+];
+
+let xp=0,xpMax=300;
+const XP_EVENTS={rythme:20,gammes:15,chords:15,ear:10,quiz_ok:25,fl:30};
+const BADGE_THRESHOLDS={rythme:20,gammes:15,chords:15,ear:50,fl:30,quiz:100};
+let badges={rythme:false,gammes:false,chords:false,ear:false,fl:false,quiz:false};
+const LEVELS=[
+  {min:0,label:'Niveau 1 — Beatmaker en herbe'},
+  {min:75,label:'Niveau 2 — Producteur en formation'},
+  {min:150,label:'Niveau 3 — DJ en devenir'},
+  {min:225,label:'Niveau 4 — Musicien confirmé'},
+  {min:300,label:'Niveau 5 — Studio Master 🏆'},
+];
+
+function earnXP(amt,reason){
+  xp=Math.min(xp+amt,xpMax);
+  document.getElementById('xp-fill').style.width=(xp/xpMax*100)+'%';
+  const lv=LEVELS.filter(l=>xp>=l.min).pop();
+  document.getElementById('xp-lvl').textContent=lv.label;
+  showNotif('+'+amt+' XP — '+reason);
+}
+function showNotif(msg){
+  const el=document.getElementById('xp-notif');
+  el.textContent=msg;el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),2200);
+}
+function unlockBadge(id){
+  if(badges[id])return;badges[id]=true;
+  const el=document.querySelector(`.badge[data-id="${id}"]`);
+  if(el){el.classList.remove('locked');el.classList.add('unlocked');}
+  showNotif('Badge débloqué : '+el.textContent);
+}
+
+// ============ TAB ============
+function goTab(id,btn){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
+  document.getElementById('s-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+function tog(hd){
+  const m=hd.closest('.mod');m.classList.toggle('open');
+}
+function swDaw(id,btn){
+  document.querySelectorAll('.sw-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.sw-panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('daw-'+id).classList.add('active');
+  if(!badges.fl){unlockBadge('fl');earnXP(XP_EVENTS.fl,'Guide FL/Rekordbox exploré');}
+}
+
+// ============ AUDIO ============
+let AC=null;
+function getAC(){if(!AC)AC=new(window.AudioContext||window.webkitAudioContext)();return AC;}
+function playNote(freq,dur=0.4,vol=0.3,type='sine'){
+  const ac=getAC();
+  const o=ac.createOscillator(),g=ac.createGain(),filter=ac.createBiquadFilter();
+  filter.type='lowpass';filter.frequency.value=3000;
+  o.type=type;o.frequency.setValueAtTime(freq,ac.currentTime);
+  g.gain.setValueAtTime(vol,ac.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+dur);
+  o.connect(filter);filter.connect(g);g.connect(ac.destination);
+  o.start();o.stop(ac.currentTime+dur);
+}
+function noteFreq(midi){return 440*Math.pow(2,(midi-69)/12);}
+function playDrum(type){
+  const ac=getAC();
+  if(type==='kick'){
+    const o=ac.createOscillator(),g=ac.createGain();
+    o.frequency.setValueAtTime(160,ac.currentTime);
+    o.frequency.exponentialRampToValueAtTime(0.01,ac.currentTime+0.5);
+    g.gain.setValueAtTime(1.2,ac.currentTime);g.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+0.5);
+    o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+0.5);
+  }else if(type==='snare'){
+    const buf=ac.createBuffer(1,ac.sampleRate*.18,ac.sampleRate),d=buf.getChannelData(0);
+    for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,2.5);
+    const s=ac.createBufferSource(),g=ac.createGain(),bq=ac.createBiquadFilter();
+    bq.type='highpass';bq.frequency.value=800;
+    s.buffer=buf;g.gain.setValueAtTime(0.7,ac.currentTime);
+    s.connect(bq);bq.connect(g);g.connect(ac.destination);s.start();s.stop(ac.currentTime+.18);
+  }else if(type==='hihat'){
+    const buf=ac.createBuffer(1,ac.sampleRate*.06,ac.sampleRate),d=buf.getChannelData(0);
+    for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,4);
+    const s=ac.createBufferSource(),g=ac.createGain(),bq=ac.createBiquadFilter();
+    bq.type='highpass';bq.frequency.value=5000;
+    s.buffer=buf;g.gain.setValueAtTime(0.35,ac.currentTime);
+    s.connect(bq);bq.connect(g);g.connect(ac.destination);s.start();s.stop(ac.currentTime+.06);
+  }else if(type==='bass'){
+    const o=ac.createOscillator(),g=ac.createGain(),f=ac.createBiquadFilter();
+    f.type='lowpass';f.frequency.value=200;
+    o.type='sawtooth';o.frequency.setValueAtTime(55,ac.currentTime);
+    g.gain.setValueAtTime(0.8,ac.currentTime);g.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+0.3);
+    o.connect(f);f.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+0.3);
+  }
+}
+function playChordAudio(root,ivxArr,octave=4){
+  ivxArr.forEach((iv,i)=>{
+    const midi=60+(N.indexOf(root))%12+iv+(octave-4)*12;
+    setTimeout(()=>playNote(noteFreq(midi),0.9,0.18,'triangle'),i*30);
+  });
+}
+
+// ============ BPM ============
+let taps=[],tapTO;
+function doTap(){
+  const now=Date.now();taps.push(now);
+  if(taps.length>8)taps.shift();
+  clearTimeout(tapTO);tapTO=setTimeout(()=>{taps=[];document.getElementById('bpm-disp').textContent='---';},3000);
+  if(taps.length<2)return;
+  const intervals=[];for(let i=1;i<taps.length;i++)intervals.push(taps[i]-taps[i-1]);
+  const avg=intervals.reduce((a,b)=>a+b,0)/intervals.length;
+  const bpm=Math.round(60000/avg);
+  document.getElementById('bpm-disp').textContent=bpm;
+  document.getElementById('seq-bpm').value=bpm;
+  if(!badges.rythme){unlockBadge('rythme');earnXP(XP_EVENTS.rythme,'Tap Tempo maîtrisé');}
+}
+function snapBPM(v){
+  document.getElementById('bpm-disp').textContent=v;
+  document.getElementById('seq-bpm').value=v;
+}
+
+// ============ SEQUENCER ============
+const ROWS=['kick','snare','hihat','bass'];
+let gs={kick:new Array(16).fill(false),snare:new Array(16).fill(false),hihat:new Array(16).fill(false),bass:new Array(16).fill(false)};
+let playing=false,step=0,seqTimer=null;
+const PATTERNS={
+  boom:{kick:[1,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0],snare:[0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],hihat:[1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0],bass:[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},
+  trap:{kick:[1,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0],snare:[0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],hihat:[1,1,0,1,1,0,1,0,1,1,0,1,1,0,1,0],bass:[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},
+  house:{kick:[1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0],snare:[0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],hihat:[0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0],bass:[1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0]},
+  dnb:{kick:[1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0],snare:[0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0],hihat:[1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0],bass:[1,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0]},
+  reggaeton:{kick:[1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,0],snare:[0,0,0,0,1,0,0,0,0,0,0,0,1,0,1,0],hihat:[0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1],bass:[1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0]},
+  afro:{kick:[1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0],snare:[0,0,1,0,0,0,0,0,0,0,1,0,0,1,0,0],hihat:[1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,1],bass:[1,0,0,0,1,0,0,0,1,0,0,0,0,0,1,0]},
+};
+function initGrid(){
+  ROWS.forEach(row=>{
+    const el=document.getElementById('g-'+row);el.innerHTML='';
+    for(let i=0;i<16;i++){
+      const c=document.createElement('div');c.className='bc';
+      if(row==='snare')c.dataset.row='snr';
+      if(row==='hihat')c.dataset.row='hht';
+      if(row==='bass')c.dataset.row='bas';
+      if(i%4===3){const d=document.createElement('div');d.className='bar-div';c.appendChild(d);}
+      c.onclick=()=>{gs[row][i]=!gs[row][i];updCell(c,row,i);};
+      el.appendChild(c);
+    }
+  });
+  loadPat('boom');
+}
+function updCell(c,row,i){
+  c.classList.remove('on','snr','hht','bas');
+  if(gs[row][i]){c.classList.add('on');if(row!=='kick')c.classList.add(c.dataset.row||'');}
+}
+function updAll(){ROWS.forEach(row=>{const cells=document.getElementById('g-'+row).children;for(let i=0;i<16;i++)updCell(cells[i],row,i);});}
+function togPlay(){
+  if(playing){clearInterval(seqTimer);playing=false;step=0;hlStep(-1);document.getElementById('play-btn').textContent='▶ PLAY';document.getElementById('play-btn').classList.remove('pri');}
+  else{
+    playing=true;document.getElementById('play-btn').textContent='■ STOP';document.getElementById('play-btn').classList.add('pri');
+    const bpm=parseInt(document.getElementById('seq-bpm').value)||90;
+    seqTimer=setInterval(()=>{
+      hlStep(step);
+      if(gs.kick[step])playDrum('kick');
+      if(gs.snare[step])playDrum('snare');
+      if(gs.hihat[step])playDrum('hihat');
+      if(gs.bass[step])playDrum('bass');
+      step=(step+1)%16;
+    },(60/bpm/4)*1000);
+  }
+}
+function hlStep(s){
+  ROWS.forEach(row=>{
+    const cells=document.getElementById('g-'+row).children;
+    for(let i=0;i<16;i++){cells[i].classList.remove('cur');if(i===s)cells[i].classList.add('cur');}
+  });
+}
+function clrGrid(){ROWS.forEach(r=>{gs[r]=new Array(16).fill(false)});updAll();}
+function loadPat(name){
+  const p=PATTERNS[name];
+  ROWS.forEach(r=>{gs[r]=p[r].map(Boolean)});updAll();
+  document.querySelectorAll('.pat-btn').forEach(b=>b.classList.remove('active-pat'));
+  event.target.classList.add('active-pat');
+}
+function randGrid(){
+  ROWS.forEach(r=>{gs[r]=Array.from({length:16},()=>Math.random()>.65)});
+  gs.kick[0]=true;gs.snare[4]=true;gs.snare[12]=true;
+  updAll();
+}
+
+// ============ PIANO / SCALE ============
+let selRoot=null,selScale='penta_min',selChordRoot=null,selChordType='min7';
+function buildRootBtns(containerId,clickFn){
+  const el=document.getElementById(containerId);
+  N.forEach((n,i)=>{
+    const b=document.createElement('button');
+    b.className='rt-btn'+(n.includes('#')?' sharp':'');
+    b.textContent=n;b.onclick=()=>{
+      el.querySelectorAll('.rt-btn').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');clickFn(i,n);
+    };
+    el.appendChild(b);
+  });
+}
+function buildScaleTypeBtns(){
+  const el=document.getElementById('scale-types');
+  Object.keys(SCALES).forEach(k=>{
+    const b=document.createElement('button');b.className='st-btn'+(k===selScale?' active':'');
+    b.textContent=SCALES[k].label;
+    b.onclick=()=>{
+      el.querySelectorAll('.st-btn').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');selScale=k;if(selRoot!==null)showScale();
+    };
+    el.appendChild(b);
+  });
+}
+function buildPianoKeys(containerId,highlightIdx=[]){
+  const el=document.getElementById(containerId);el.innerHTML='';
+  PIANO_LAYOUT.forEach((k,i)=>{
+    const div=document.createElement('div');
+    div.className='key '+(k.t==='w'?'wh':'bk')+(highlightIdx.includes(i)?' active-scale':'');
+    div.textContent=k.n;
+    div.onclick=()=>{playNote(noteFreq(60+i),0.5,0.25,'triangle');};
+    el.appendChild(div);
+  });
+}
+function showScale(){
+  const ivx=SCALES[selScale].ivx;
+  const notes=ivx.map(i=>N[(selRoot+i)%12]);
+  const idxs=ivx.map(i=>i%12);
+  buildPianoKeys('piano-keys',idxs);
+  const camEntry=CAMELOT.find(c=>c.maj===N[selRoot]||c.min===N[selRoot]);
+  const camStr=camEntry?` · Camelot: ${camEntry.camM} / ${camEntry.camm}`:'';
+  document.getElementById('scale-out').innerHTML=
+    `<span style="color:var(--tm);font-size:10px">${SCALES[selScale].label} de ${N[selRoot]}${camStr}</span><br>${notes.join(' – ')}`;
+  if(!badges.gammes){unlockBadge('gammes');earnXP(XP_EVENTS.gammes,'Première gamme explorée');}
+}
+function buildChordGrid(){
+  const el=document.getElementById('chord-grid');
+  Object.keys(CHORDS).forEach(k=>{
+    const c=CHORDS[k];const div=document.createElement('div');
+    div.className='chord-card'+(k===selChordType?' active':'');
+    div.innerHTML=`<div class="chord-name" style="color:${c.color}">${c.label}</div><div class="chord-type" style="font-size:9px;color:${c.color}60">${c.ivx.join('-')}</div>`;
+    div.onclick=()=>{
+      document.querySelectorAll('.chord-card').forEach(x=>x.classList.remove('active'));
+      div.classList.add('active');selChordType=k;showChord();
+    };
+    el.appendChild(div);
+  });
+  buildPianoKeys('chord-piano');
+}
+function showChord(){
+  if(selChordRoot===null)return;
+  const c=CHORDS[selChordType];
+  const notes=c.ivx.map(i=>N[(selChordRoot+i)%12]);
+  document.getElementById('chord-notes').innerHTML=
+    `<span style="color:var(--tm);font-size:10px">${N[selChordRoot]} ${c.label}</span> — ${notes.join(' – ')}`;
+  buildPianoKeys('chord-piano',c.ivx.map(i=>i%12));
+  playChordAudio(N[selChordRoot],c.ivx);
+  if(!badges.chords){unlockBadge('chords');earnXP(XP_EVENTS.chords,'Premier accord construit');}
+}
+function buildProgPresets(){
+  const el=document.getElementById('prog-presets');
+  PROGRESSIONS.forEach(p=>{
+    const div=document.createElement('div');div.className='prog-pre';
+    div.innerHTML=`<div class="pn">${p.name}</div><div class="pd">${p.roman}<br><span style="font-size:10px;color:rgba(240,238,232,0.3)">${p.genres}</span></div>`;
+    div.onclick=()=>{
+      document.getElementById('prog-explain').textContent=`Ex: ${p.example} — Utilisé en : ${p.genres}`;
+    };
+    el.appendChild(div);
+  });
+}
+
+// ============ CAMELOT WHEEL ============
+function drawCamelot(){
+  const svg=document.getElementById('cam-svg');
+  const cx=130,cy=130,ro=110,ri=70,rim=45;
+  CAMELOT.forEach((item,i)=>{
+    const a1=(i*30-90)*Math.PI/180,a2=((i+1)*30-90)*Math.PI/180;
+    const hues=['#FF4D4D','#FF6040','#FF9A3C','#E8C840','#90D040','#50C878','#40D0B8','#38B2F8','#4080FF','#8060FF','#C040E0','#FF40A8'];
+    // outer (maj)
+    const g1=document.createElementNS('http://www.w3.org/2000/svg','path');
+    g1.setAttribute('d',`M${cx+ri*Math.cos(a1)},${cy+ri*Math.sin(a1)} L${cx+ro*Math.cos(a1)},${cy+ro*Math.sin(a1)} A${ro},${ro} 0 0,1 ${cx+ro*Math.cos(a2)},${cy+ro*Math.sin(a2)} L${cx+ri*Math.cos(a2)},${cy+ri*Math.sin(a2)} A${ri},${ri} 0 0,0 ${cx+ri*Math.cos(a1)},${cy+ri*Math.sin(a1)} Z`);
+    g1.setAttribute('fill',hues[i]+'25');g1.setAttribute('stroke',hues[i]+'50');g1.setAttribute('stroke-width','0.5');
+    g1.style.cursor='pointer';
+    const ma=(i*30-75)*Math.PI/180;
+    g1.addEventListener('click',()=>{
+      const num=parseInt(item.camM);const prev=(num-2+12)%12+1,next=num%12+1;
+      document.getElementById('cam-info').innerHTML=
+        `<span style="color:${hues[i]}">${item.camM}</span> ${item.maj} maj · <span style="color:${hues[i]}90">${item.camm}</span> ${item.min} min<br><span style="font-size:10px;color:rgba(240,238,232,0.45)">Compatible : ${prev}A/${prev}B · ${next}A/${next}B · ${item.camM[0]==='1'?'12':''}${num}A</span>`;
+    });
+    svg.appendChild(g1);
+    // inner (min)
+    const g2=document.createElementNS('http://www.w3.org/2000/svg','path');
+    g2.setAttribute('d',`M${cx+rim*Math.cos(a1)},${cy+rim*Math.sin(a1)} L${cx+ri*Math.cos(a1)},${cy+ri*Math.sin(a1)} A${ri},${ri} 0 0,1 ${cx+ri*Math.cos(a2)},${cy+ri*Math.sin(a2)} L${cx+rim*Math.cos(a2)},${cy+rim*Math.sin(a2)} A${rim},${rim} 0 0,0 ${cx+rim*Math.cos(a1)},${cy+rim*Math.sin(a1)} Z`);
+    g2.setAttribute('fill',hues[i]+'15');g2.setAttribute('stroke',hues[i]+'30');g2.setAttribute('stroke-width','0.5');
+    svg.appendChild(g2);
+    // labels
+    const rm=(ro+ri)/2,ri2=(ri+rim)/2;
+    [[rm,item.maj,item.camM,'14','#F0EEE8'],[ri2,item.min,item.camm,'10','rgba(240,238,232,0.55)']].forEach(([r,label,cam,fs,fill])=>{
+      const tx=cx+r*Math.cos(ma),ty=cy+r*Math.sin(ma);
+      const t1=document.createElementNS('http://www.w3.org/2000/svg','text');
+      t1.setAttribute('x',tx);t1.setAttribute('y',ty-3);t1.setAttribute('text-anchor','middle');
+      t1.setAttribute('font-size',fs);t1.setAttribute('fill',fill);t1.setAttribute('font-weight','700');t1.setAttribute('font-family','Space Mono, monospace');
+      t1.textContent=label;svg.appendChild(t1);
+      const t2=document.createElementNS('http://www.w3.org/2000/svg','text');
+      t2.setAttribute('x',tx);t2.setAttribute('y',ty+parseInt(fs));t2.setAttribute('text-anchor','middle');
+      t2.setAttribute('font-size',parseInt(fs)-3);t2.setAttribute('fill',hues[i]);t2.setAttribute('font-family','Space Mono, monospace');
+      t2.textContent=cam;svg.appendChild(t2);
+    });
+  });
+  const cc=document.createElementNS('http://www.w3.org/2000/svg','circle');
+  cc.setAttribute('cx',cx);cc.setAttribute('cy',cy);cc.setAttribute('r',rim);
+  cc.setAttribute('fill','#111118');cc.setAttribute('stroke','rgba(255,255,255,0.06)');cc.setAttribute('stroke-width','0.5');
+  svg.appendChild(cc);
+  const ct=document.createElementNS('http://www.w3.org/2000/svg','text');
+  ct.setAttribute('x',cx);ct.setAttribute('y',cy+4);ct.setAttribute('text-anchor','middle');
+  ct.setAttribute('font-size','9');ct.setAttribute('fill','rgba(240,238,232,0.3)');ct.setAttribute('font-family','Space Mono, monospace');
+  ct.textContent='CAMELOT';svg.appendChild(ct);
+}
+
+// ============ EAR TRAINING ============
+let earQ=null,earAnswered=false,earStreak=0;
+const EAR_CHORDS=[
+  {name:'Majeur',ivx:[0,4,7]},{name:'Mineur',ivx:[0,3,7]},
+  {name:'Dom7',ivx:[0,4,7,10]},{name:'Min7',ivx:[0,3,7,10]},
+  {name:'Maj7',ivx:[0,4,7,11]},{name:'Dim',ivx:[0,3,6]},
+  {name:'Sus4',ivx:[0,5,7]},{name:'Add9',ivx:[0,4,7,14]},
+];
+function newEarQ(){
+  earAnswered=false;
+  const all=[...EAR_CHORDS];
+  earQ=all[Math.floor(Math.random()*all.length)];
+  const root=N[Math.floor(Math.random()*12)];earQ.root=root;
+  document.getElementById('ear-note').textContent='🎵';
+  document.getElementById('ear-sub').textContent='Écoute et identifie l\'accord de '+root;
+  document.getElementById('ear-fb').className='q-fb';
+  const opts=[earQ,...all.filter(c=>c.name!==earQ.name).sort(()=>Math.random()-.5).slice(0,3)].sort(()=>Math.random()-.5);
+  const el=document.getElementById('ear-opts');el.innerHTML='';
+  opts.forEach(o=>{
+    const b=document.createElement('div');b.className='ear-opt';b.textContent=o.name;
+    b.onclick=()=>answerEar(o.name===earQ.name,b);
+    el.appendChild(b);
+  });
+}
+function playEarChord(){
+  if(!earQ)return newEarQ();
+  playChordAudio(earQ.root,earQ.ivx);
+  document.getElementById('ear-note').textContent=earQ.root;
+}
+function answerEar(correct,btn){
+  if(earAnswered)return;earAnswered=true;
+  const fb=document.getElementById('ear-fb');
+  if(correct){
+    btn.classList.add('ok');earStreak++;
+    fb.className='q-fb show ok';fb.textContent='✓ Correct ! C\'est bien un '+earQ.name+' de '+earQ.root;
+    if(earStreak>=3&&!badges.ear){unlockBadge('ear');earnXP(50,'Série de 3 — Oreille d\'or !');}
+    else earnXP(XP_EVENTS.ear,'Accord identifié');
+  }else{
+    btn.classList.add('ko');earStreak=0;
+    document.querySelectorAll('.ear-opt').forEach(b=>{if(b.textContent===earQ.name)b.classList.add('ok');});
+    fb.className='q-fb show ko';fb.textContent='✗ C\'était un '+earQ.name+' de '+earQ.root+'. Écoute bien la différence maj/min dans la tierce.';
+  }
+  document.getElementById('ear-streak').textContent='🔥 Série : '+earStreak;
+}
+
+// ============ BPM GUESS ============
+let secretBPM=0,metroTimer=null,metroPl=false;
+function newBPMGuess(){
+  secretBPM=[70,80,85,90,95,100,110,120,125,128,130,140,150,170,174][Math.floor(Math.random()*15)];
+  document.getElementById('bpm-guess-disp').textContent='?';
+  document.getElementById('bpm-guess-fb').textContent='Lance le métronome et essaie de deviner le BPM !';
+  document.getElementById('bpm-guess-fb').style.color='var(--tm)';
+  document.getElementById('bpm-guess-inp').value='';
+  if(metroTimer){clearInterval(metroTimer);metroTimer=null;metroPl=false;document.getElementById('metro-btn').textContent='▶ DÉMARRER MÉTRONOME';}
+}
+function togMetro(){
+  if(metroPl){clearInterval(metroTimer);metroTimer=null;metroPl=false;document.getElementById('metro-btn').textContent='▶ DÉMARRER MÉTRONOME';}
+  else{
+    if(!secretBPM)newBPMGuess();
+    metroPl=true;document.getElementById('metro-btn').textContent='■ STOP MÉTRONOME';
+    let beat=0;
+    metroTimer=setInterval(()=>{
+      const ac=getAC();const o=ac.createOscillator(),g=ac.createGain();
+      o.frequency.value=beat%4===0?880:660;g.gain.setValueAtTime(0.4,ac.currentTime);g.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+0.05);
+      o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+0.05);beat++;
+    },(60/secretBPM)*1000);
+  }
+}
+function checkBPMGuess(){
+  const guess=parseInt(document.getElementById('bpm-guess-inp').value);
+  if(!guess)return;
+  const diff=Math.abs(guess-secretBPM),fb=document.getElementById('bpm-guess-fb');
+  document.getElementById('bpm-guess-disp').textContent=secretBPM;
+  if(diff===0){fb.textContent='🎯 Parfait ! C\'est exactement '+secretBPM+' BPM !';fb.style.color='var(--g)';earnXP(20,'BPM deviné parfaitement !');}
+  else if(diff<=3){fb.textContent='🔥 Presque ! '+secretBPM+' BPM — tu as dit '+guess;fb.style.color='var(--o)';}
+  else if(diff<=8){fb.textContent='💛 Proche ! '+secretBPM+' BPM — tu as dit '+guess+' (diff: '+diff+')';fb.style.color='var(--o)';}
+  else{fb.textContent='❌ '+secretBPM+' BPM — tu as dit '+guess+'. Réessaie !';fb.style.color='var(--r)';}
+}
+
+// ============ QUIZ ============
+const QUIZ=[
+  {cat:'RYTHME',q:'Quel BPM est typique pour la House music ?',opts:['85','100','125','175'],ans:2,exp:'La House music tourne généralement entre 120–130 BPM. 125 est un standard classique.'},
+  {cat:'RYTHME',q:'Combien de pas comporte un séquenceur 16 pas en 4/4 ?',opts:['8','12','16','32'],ans:2,exp:'16 pas = 4 temps × 4 doubles-croches. C\'est la grille standard de la quasi-totalité de la musique électronique.'},
+  {cat:'GAMMES',q:'Combien de notes contient la gamme pentatonique ?',opts:['4','5','6','7'],ans:1,exp:'"Penta" = 5. La pentatonique a 5 notes par octave, ce qui la rend très indulgente pour improviser.'},
+  {cat:'GAMMES',q:'Quel mode est très utilisé en funk, soul et hip-hop pour son côté "lumineux" dans le mineur ?',opts:['Lydien','Phrygien','Dorien','Locrien'],ans:2,exp:'Le Dorien est un mode mineur avec une 6ème majeure. Cette note "lumineuse" dans un contexte sombre crée le son soul et funk classique.'},
+  {cat:'ACCORDS',q:'Quelle est la différence entre un accord majeur et mineur ?',opts:['La fondamentale change','La tierce est abaissée d\'un demi-ton','Le tempo change','La quinte est supprimée'],ans:1,exp:'Majeur = 4+3 demi-tons. Mineur = 3+4 demi-tons. La tierce (3ème note) est abaissée d\'un demi-ton — c\'est ça qui crée la couleur mélancolique.'},
+  {cat:'ACCORDS',q:'La progression I–V–VI–IV en Do majeur donne :',opts:['Do–Sol–La min–Fa','Do–Fa–Sol–La min','La min–Sol–Fa–Do','Fa–Sol–La min–Do'],ans:0,exp:'C\'est la progression pop universelle : Do–Sol–La min–Fa. On la retrouve dans des milliers de hits depuis les années 60.'},
+  {cat:'DJing',q:'Qu\'est-ce que le beatmatching ?',opts:['Choisir des accords compatibles','Aligner le BPM de deux morceaux','Égaliser les fréquences','Programmer un séquenceur'],ans:1,exp:'Le beatmatching = ajuster le tempo de deux morceaux pour qu\'ils jouent au même BPM. Base absolue du DJing.'},
+  {cat:'DJing',q:'Dans le système Camelot, aller de 8B à 9B c\'est…',opts:['Changer de mineur à majeur','Aller à la tonalité voisine compatible','Monter d\'une octave','Doubler le BPM'],ans:1,exp:'±1 chiffre dans Camelot = tonalité voisine harmoniquement compatible. Transitions fluides garanties.'},
+  {cat:'DJing',q:'Quel format USB pour exporter depuis Rekordbox vers des CDJ Pioneer ?',opts:['NTFS','exFAT / FAT32 ou HFS+','ext4','APFS'],ans:1,exp:'Les CDJ Pioneer lisent les clés USB formatées en FAT32 (Windows) ou HFS+ (Mac). Évite NTFS et exFAT pour la compatibilité maximale.'},
+  {cat:'FL STUDIO',q:'Quel raccourci ouvre le Piano Roll dans FL Studio ?',opts:['F5','F6','F7','F9'],ans:2,exp:'F7 = Piano Roll · F6 = Channel Rack · F9 = Mixer · F5 = Playlist. Ces 4 raccourcis sont fondamentaux.'},
+  {cat:'FL STUDIO',q:'Comment quantizer les notes dans le Piano Roll FL Studio ?',opts:['Ctrl+Q','Alt+Q','Shift+Q','Ctrl+G'],ans:0,exp:'Ctrl+Q = Quantize dans FL Studio. Ça "aimante" tes notes sur la grille rythmique — essentiel pour corriger le timing.'},
+  {cat:'HARMONIE',q:'En harmonic mixing DJ, que signifie "A" dans le code Camelot (ex: 8A) ?',opts:['La tonalité est majeure','La tonalité est mineure','Le BPM est pair','La piste est rapide'],ans:1,exp:'Dans Camelot : A = mineur, B = majeur. Ainsi 8A = Do mineur, 8B = Do majeur. Même chiffre, tonalités relatives.'},
+  {cat:'HARMONIE',q:'Quel accord donne une couleur "jazzy, lo-fi, mélancolique" ?',opts:['Majeur','Diminué','Mineur 7ème','Sus4'],ans:2,exp:'Le Min7 (mineur avec 7ème mineure) est la base du jazz, lo-fi et néo-soul. 4 notes : fondamentale + tierce min + quinte + 7ème min.'},
+];
+let qIdx=0,qScore=0,qAnswered=false,qShuffled=[];
+function initQuiz(){
+  qShuffled=[...QUIZ].sort(()=>Math.random()-.5);qIdx=0;qScore=0;renderQ();
+}
+function renderQ(){
+  const body=document.getElementById('quiz-body');
+  if(qIdx>=qShuffled.length){
+    const pct=Math.round(qScore/qShuffled.length*100);
+    body.innerHTML=`<div class="score-big">${qScore}/${qShuffled.length}</div><div class="score-msg">${pct}% — ${pct===100?'Parfait 🏆':pct>=70?'Bon score 🔥':'Continue à explorer 📖'}</div><button class="btn pri" style="display:block;margin:1.25rem auto 0" onclick="initQuiz()">RECOMMENCER</button>`;
+    if(pct>=70&&!badges.quiz){unlockBadge('quiz');earnXP(XP_EVENTS.quiz_ok,'Quiz terminé avec succès !');}
+    return;
+  }
+  const q=qShuffled[qIdx];qAnswered=false;
+  body.innerHTML=`<div class="quiz-prg"><span>${qIdx+1} / ${qShuffled.length}</span><span style="color:var(--o)">${qScore} pts</span></div><div class="quiz-cat">${q.cat}</div><div class="quiz-q">${q.q}</div><div class="quiz-opts">${q.opts.map((o,i)=>`<button class="qo" onclick="ansQ(${i})">${o}</button>`).join('')}</div><div class="q-fb" id="qfb"></div><button class="q-next" id="qnext" onclick="nextQ()">Question suivante →</button>`;
+}
+function ansQ(i){
+  if(qAnswered)return;qAnswered=true;
+  const q=qShuffled[qIdx];const opts=document.querySelectorAll('.qo');const fb=document.getElementById('qfb');
+  opts[q.ans].classList.add('ok');
+  if(i===q.ans){qScore++;fb.className='q-fb show ok';fb.textContent='✓ '+q.exp;earnXP(5,'Bonne réponse');}
+  else{opts[i].classList.add('ko');fb.className='q-fb show ko';fb.textContent='✗ '+q.exp;}
+  document.getElementById('qnext').className='q-next show';
+}
+function nextQ(){qIdx++;renderQ();}
+
+// ============ INIT ============
+initGrid();
+buildRootBtns('scale-root',(i)=>{selRoot=i;showScale();});
+buildScaleTypeBtns();buildPianoKeys('piano-keys');
+buildRootBtns('chord-root',(i,n)=>{selChordRoot=i;showChord();});
+buildChordGrid();
+buildProgPresets();
+drawCamelot();
+newEarQ();newBPMGuess();
+initQuiz();
+buildPianoKeys('chord-piano');
+</script>
+</body>
+</html>
